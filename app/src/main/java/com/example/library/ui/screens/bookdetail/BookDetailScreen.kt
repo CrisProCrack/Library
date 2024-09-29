@@ -40,13 +40,6 @@ import androidx.compose.ui.unit.sp
 import com.example.library.R
 import com.example.library.ui.theme.LibraryTheme
 
-//Funcion de la barra superior
-@Preview
-@Composable
-fun TopAppBar() {
-
-}
-
 //Funcion de la pantalla de detalle de libro
 @Preview
 @Composable
@@ -176,7 +169,7 @@ fun BookDetailScreen(){
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Book Details") },
+                title = { Text("BookDao Details") },
                 navigationIcon = {
                     IconButton(onClick = { /* Acción de navegación, por ejemplo, regresar */ }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
