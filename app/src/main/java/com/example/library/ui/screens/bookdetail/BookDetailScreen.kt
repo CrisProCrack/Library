@@ -11,16 +11,23 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.*
-import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.ui.unit.dp
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.MenuBook
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.outlined.Bookmark
+import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,9 +35,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.sp
 import com.example.library.R
+import com.example.library.ui.theme.LibraryTheme
 
 //Funcion de la barra superior
 @Preview
@@ -159,29 +167,56 @@ fun TextAndImage(){
     }
 }
 
+
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 fun BookDetailScreen(){
     Scaffold(
         topBar = {
             TopAppBar(
-
+                title = { Text("Book Details") },
+                navigationIcon = {
+                    IconButton(onClick = { /* Acción de navegación, por ejemplo, regresar */ }) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                    }
+                },
+                actions = {
+                    IconButton(onClick = { /* Acción de acción, como favoritos */ }) {
+                        Icon(Icons.Outlined.Bookmark, contentDescription = "Favorite")
+                    }
+                    IconButton(onClick = { /*TODO*/ }) {
+                        Icon(Icons.Outlined.MoreVert, contentDescription = "Other options")
+                    }
+                }
             )
-        },
+        }
     ) { innerPadding ->
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
-            HeaderBookDetail()
-            Spacer(modifier = Modifier.height(16.dp))
-            TextContent()
-            Spacer(modifier = Modifier.height(16.dp))
-            SimpleCardGrid()
-            Spacer(modifier = Modifier.height(16.dp))
-            TextAndImage()
+            item { HeaderBookDetail() }
+            item { Spacer(modifier = Modifier.height(16.dp)) }
+            item { TextContent() }
+            item { Spacer(modifier = Modifier.height(16.dp)) }
+            item { SimpleCardGrid() }
+            item { Spacer(modifier = Modifier.height(16.dp)) }
+            items(5) { // Reemplaza con tu lógica para determinar el número de elementos
+                TextAndImage()
+                Spacer(modifier = Modifier.height(16.dp))
+            }
         }
+    }
+}
+
+@Preview
+@Composable
+fun BookDetailScreenPreview(){
+    LibraryTheme {
+        BookDetailScreen()
     }
 }
