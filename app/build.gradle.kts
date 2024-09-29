@@ -66,4 +66,12 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    //Material 3
+    implementation (libs.androidx.compose.material3.material3)
+
+
+    //Icons
+    implementation(libs.material.icons.extended)
+
 }
