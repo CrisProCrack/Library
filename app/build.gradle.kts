@@ -60,6 +60,9 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.navigation.runtime.ktx)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.runtime.livedata)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -75,9 +78,13 @@ dependencies {
     //Icons
     implementation(libs.material.icons.extended)
 
-    //
+    //Navigation
+    implementation("androidx.compose.material:material:1.7.1")
+
+    //KSP
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.room.runtime)
-
+    implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.androidx.runtime.livedata.v173)
 }

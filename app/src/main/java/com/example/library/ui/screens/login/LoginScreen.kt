@@ -17,12 +17,23 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.example.library.R
+import com.example.library.ui.screens.login.LoginViewModel
 import com.example.library.ui.theme.LibraryTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen() {
+fun LoginScreen(
+    viewModel: LoginViewModel = viewModel(),
+    navController: NavController
+) {
+    // Observamos los estados desde el ViewModel
+    val email by viewModel.email.collectAsState()
+    val password by viewModel.password.collectAsState()
+    val loginSuccess by viewModel.loginSuccess.collectAsState()
+
     Scaffold { innerPadding ->
         Column(
             modifier = Modifier
@@ -55,7 +66,7 @@ fun LoginScreen() {
 
             // Imagen de usuario
             Image(
-                painter = painterResource(id = R.drawable.ic_launcher_foreground), // Reemplaza con tu recurso de imagen
+                painter = painterResource(id = R.drawable.ic_launcher_foreground),
                 contentDescription = "Avatar",
                 modifier = Modifier
                     .size(120.dp)
@@ -67,8 +78,8 @@ fun LoginScreen() {
 
             // Campo de correo electrónico
             OutlinedTextField(
-                value = "",
-                onValueChange = {},
+                value = email,
+                onValueChange = { viewModel.onEmailChange(it) },
                 label = { Text("Correo") },
                 placeholder = { Text("Ingresa un correo electrónico") },
                 modifier = Modifier.fillMaxWidth()
@@ -78,8 +89,8 @@ fun LoginScreen() {
 
             // Campo de contraseña
             OutlinedTextField(
-                value = "",
-                onValueChange = {},
+                value = password,
+                onValueChange = { viewModel.onPasswordChange(it) },
                 label = { Text("Contraseña") },
                 placeholder = { Text("Ingresa una contraseña") },
                 visualTransformation = PasswordVisualTransformation(),
@@ -90,7 +101,12 @@ fun LoginScreen() {
 
             // Botón de inicio de sesión
             Button(
-                onClick = { /* Acción de iniciar sesión */ },
+                onClick = {
+                    viewModel.login()
+                    if (loginSuccess) {
+                        navController.navigate(Screens.Catalog.route)
+                    }
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp),
@@ -102,18 +118,35 @@ fun LoginScreen() {
             Spacer(modifier = Modifier.height(22.dp))
 
             // Texto de registro
-            TextButton(onClick = { /* Acción de registro */ }) {
+            TextButton(onClick = { navController.navigate(Screens.Register.route) }) {
                 Text("¿No estás registrado? Regístrate", color = Color.Black)
+            }
+
+            // Mensaje de éxito en el inicio de sesión
+            if (loginSuccess) {
+                Text("Inicio de sesión exitoso", color = MaterialTheme.colorScheme.primary)
+            } else {
+                Text("Credenciales incorrectas", color = MaterialTheme.colorScheme.error)
             }
         }
     }
 }
 
-
-@Composable
-@Preview
-fun LoginScreenPreview() {
-    LibraryTheme {
-        LoginScreen()
-    }
-}
+//class PreviewLoginViewModel : LoginViewModel() {
+//    init {
+//        // Simulando el valor de email y password
+//        _email.value = "usuario@ejemplo.com"
+//        _password.value = "contraseña123"
+//        _loginSuccess.value = true
+//    }
+//}
+//
+//@Composable
+//@Preview
+//fun LoginScreenPreview() {
+//    val previewViewModel = PreviewLoginViewModel()
+//
+//    LibraryTheme {
+//        //LoginScreen(viewModel = previewViewModel)
+//    }
+//}
