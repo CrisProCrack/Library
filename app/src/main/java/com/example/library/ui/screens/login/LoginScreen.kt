@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -20,15 +21,18 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.library.R
+import com.example.library.data.LibraryDatabase
 import com.example.library.ui.screens.login.LoginViewModel
 import com.example.library.ui.theme.LibraryTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(
-    viewModel: LoginViewModel = viewModel(),
-    navController: NavController
+    navController: NavController,
+    database: LibraryDatabase = LibraryDatabase.getDatabase(context = LocalContext.current)
 ) {
+    val viewModel: LoginViewModel = viewModel(factory = LoginViewModelFactory(database))
+
     // Observamos los estados desde el ViewModel
     val email by viewModel.email.collectAsState()
     val password by viewModel.password.collectAsState()
@@ -132,21 +136,3 @@ fun LoginScreen(
     }
 }
 
-//class PreviewLoginViewModel : LoginViewModel() {
-//    init {
-//        // Simulando el valor de email y password
-//        _email.value = "usuario@ejemplo.com"
-//        _password.value = "contraseña123"
-//        _loginSuccess.value = true
-//    }
-//}
-//
-//@Composable
-//@Preview
-//fun LoginScreenPreview() {
-//    val previewViewModel = PreviewLoginViewModel()
-//
-//    LibraryTheme {
-//        //LoginScreen(viewModel = previewViewModel)
-//    }
-//}

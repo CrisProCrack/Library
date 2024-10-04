@@ -7,20 +7,24 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.ViewModelFactoryDsl
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.library.data.LibraryDatabase
 import com.example.library.ui.theme.LibraryTheme
 import com.example.library.ui.screens.register.RegisterViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterScreen(
-    viewModel: RegisterViewModel = viewModel(),
-    navController: NavController
+    navController: NavController,
+    database: LibraryDatabase = LibraryDatabase.getDatabase(context = LocalContext.current)
 ) {
+    val viewModel: RegisterViewModel = viewModel(factory = ViewModelFactory(database))
     val name by viewModel.name.collectAsState()
     val email by viewModel.email.collectAsState()
     val phoneNumber by viewModel.phoneNumber.collectAsState()

@@ -45,11 +45,6 @@ fun CatalogScreen(
         topBar = {
             TopAppBar(
                 title = { Text("Catálogo") },
-                navigationIcon = {
-                    IconButton(onClick = { /* Acción de volver */ }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
-                    }
-                },
                 actions = {
                     IconButton(onClick = { /* Acción de menú */ }) {
                         Icon(Icons.Filled.MoreVert, contentDescription = "Menú")

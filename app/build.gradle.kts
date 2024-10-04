@@ -79,7 +79,11 @@ dependencies {
     implementation(libs.material.icons.extended)
 
     //Navigation
-    implementation("androidx.compose.material:material:1.7.1")
+    implementation(libs.material)
+
+    //SearchBar
+    implementation (libs.androidx.foundation)
+    implementation("androidx.compose.runtime:runtime:1.7.3")
 
     //KSP
     ksp(libs.androidx.room.compiler)

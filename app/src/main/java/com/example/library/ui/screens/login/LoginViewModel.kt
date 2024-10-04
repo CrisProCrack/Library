@@ -2,40 +2,34 @@ package com.example.library.ui.screens.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.library.data.LibraryDatabase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-open class LoginViewModel : ViewModel(){
-    //Estados para el correo y la contrasena
+class LoginViewModel(private val database: LibraryDatabase) : ViewModel() {
     val _email = MutableStateFlow("")
     val email: StateFlow<String> = _email
 
     val _password = MutableStateFlow("")
-    val password : StateFlow<String> = _password
+    val password: StateFlow<String> = _password
 
     val _loginSuccess = MutableStateFlow(false)
-    val loginSuccess : StateFlow<Boolean> = _loginSuccess
+    val loginSuccess: StateFlow<Boolean> = _loginSuccess
 
-    //Actualizacion del correo
-    fun onEmailChange(newEmail : String){
+    fun onEmailChange(newEmail: String) {
         _email.value = newEmail
     }
 
-    //Actualizacion de la contrasena
-    fun onPasswordChange(newPassword : String){
+    fun onPasswordChange(newPassword: String) {
         _password.value = newPassword
     }
 
-    //Funcion para manejar el inicio de sesion
-    fun login(){
+    fun login() {
         viewModelScope.launch {
-            //Aqui iria la logica de autenticacion
-            if (_email.value == "admin" && _password.value == "admin"){
-                _loginSuccess.value = true
-            } else {
-                _loginSuccess.value = false
-            }
+            // Verifica si las credenciales son correctas
+            val user = database.userDao().getUserByEmailAndPassword(_email.value, _password.value)
+            _loginSuccess.value = user != null // true si el usuario fue encontrado
         }
     }
 }

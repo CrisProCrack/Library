@@ -2,6 +2,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Book
 import androidx.compose.material.icons.filled.Bookmarks
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.ui.graphics.vector.ImageVector
 
 // Definir los elementos de navegación inferior como un data class
@@ -14,14 +15,14 @@ data class BottomNavigationItem(
     fun bottomNavigationItems(): List<BottomNavigationItem> {
         return listOf(
             BottomNavigationItem(
-                label = "Detalle del libro",
-                icon = Icons.Filled.Book,
-                route = Screens.BookDetail.route
-            ),
-            BottomNavigationItem(
                 label = "Catálogo",
                 icon = Icons.Filled.Bookmarks,
                 route = Screens.Catalog.route
+            ),
+            BottomNavigationItem(
+                label = "Buscar",
+                icon = Icons.Filled.Search,
+                route = Screens.Search.route
             )
         )
     }
@@ -33,5 +34,6 @@ sealed class Screens(val route: String) {
     object Register : Screens("register")
     object BookDetail : Screens("book_detail")
     object Catalog : Screens("catalog")
+    object Search : Screens("search")
 
 }

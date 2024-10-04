@@ -16,10 +16,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.library.data.repository.BookRepository
 import com.example.library.ui.screens.bookdetail.BookDetailScreen
 import com.example.library.ui.screens.catalog.CatalogScreen
 import com.example.library.ui.screens.login.LoginScreen
 import com.example.library.ui.screens.register.RegisterScreen
+import com.example.library.ui.screens.search.SearchScreen
 
 @Composable
 fun BottomNavigationBar() {
@@ -72,6 +74,13 @@ fun BottomNavigationBar() {
             composable(Screens.Catalog.route) {
                 CatalogScreen(navController = navController)
             }
+            composable(Screens.BookDetail.route) {
+                BookDetailScreen(navController = navController)
+            }
+//            composable(Screens.Search.route) {
+//                val bookRepository = BookRepository(/* Tu implementación de BookDao */)
+//                SearchScreen(navController = navController)
+//            }
             // Otras pantallas como BookDetail
         }
     }
