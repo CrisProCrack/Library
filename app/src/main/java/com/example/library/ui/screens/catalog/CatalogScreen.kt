@@ -24,6 +24,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.library.R
 import com.example.library.ui.screens.catalog.CatalogViewModel
+import com.example.library.ui.theme.LibraryTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -41,50 +42,52 @@ fun CatalogScreen(
         viewModel.loadBooks()
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Catálogo") },
-                actions = {
-                    IconButton(onClick = { /* Acción de menú */ }) {
-                        Icon(Icons.Filled.MoreVert, contentDescription = "Menú")
+    LibraryTheme { // Aplica tu tema
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = { Text("Catálogo", style = MaterialTheme.typography.titleLarge) },
+                    actions = {
+                        IconButton(onClick = { /* Acción de menú */ }) {
+                            Icon(Icons.Filled.MoreVert, contentDescription = "Menú")
+                        }
                     }
-                }
-            )
-        },
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize()
-                .padding(16.dp)
-        ) {
-            // Filtro con Chips (Carrusel)
-            FilterChipCarousel(
-                selectedFilter = selectedFilter,
-                onFilterSelected = { viewModel.onFilterSelected(it) }
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Controles de ordenación
-            SortingControls(
-                sortingOption = sortingOption,
-                onSortingOptionSelected = { viewModel.onSortingOptionSelected(it) }
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Grid de libros
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(3),
-                contentPadding = PaddingValues(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.fillMaxHeight()
+                )
+            },
+        ) { innerPadding ->
+            Column(
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .fillMaxSize()
+                    .padding(16.dp)
             ) {
-                items(books.size) { index ->
-                    Cards(bookTitle = books[index])
+                // Filtro con Chips (Carrusel)
+                FilterChipCarousel(
+                    selectedFilter = selectedFilter,
+                    onFilterSelected = { viewModel.onFilterSelected(it) }
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Controles de ordenación
+                SortingControls(
+                    sortingOption = sortingOption,
+                    onSortingOptionSelected = { viewModel.onSortingOptionSelected(it) }
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Grid de libros
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(3),
+                    contentPadding = PaddingValues(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.fillMaxHeight()
+                ) {
+                    items(books.size) { index ->
+                        Cards(bookTitle = books[index])
+                    }
                 }
             }
         }
@@ -106,7 +109,13 @@ fun FilterChipCarousel(
             FilterChip(
                 selected = label == selectedFilter,
                 onClick = { onFilterSelected(label) },
-                label = { Text(label) }
+                label = { Text(label) },
+                colors = FilterChipDefaults.filterChipColors(
+                    selectedContainerColor = MaterialTheme.colorScheme.primary,
+                    selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
+                    disabledContainerColor = MaterialTheme.colorScheme.surface,
+                    disabledLabelColor = MaterialTheme.colorScheme.onSurface
+                )
             )
         }
     }
@@ -123,7 +132,7 @@ fun SortingControls(
         verticalAlignment = Alignment.CenterVertically
     ) {
         IconButton(onClick = { onSortingOptionSelected("Ascendente") }) {
-            Icon(imageVector = Icons.Default.SwapVert, contentDescription = "Sort" )
+            Icon(imageVector = Icons.Default.SwapVert, contentDescription = "Sort")
         }
         Text(text = sortingOption, style = MaterialTheme.typography.labelLarge)
     }
@@ -131,13 +140,13 @@ fun SortingControls(
 
 @Composable
 fun Cards(bookTitle: String, catalogViewModel: CatalogViewModel = viewModel()) {
-    //Obtenemos la fecha actual del ViewModel
+    // Obtenemos la fecha actual del ViewModel
     val currentDate by catalogViewModel.currentDate
     Card(
         modifier = Modifier
             .width(120.dp)
             .height(168.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         Column(
             modifier = Modifier.fillMaxSize()
@@ -160,5 +169,5 @@ fun Cards(bookTitle: String, catalogViewModel: CatalogViewModel = viewModel()) {
 @Preview
 @Composable
 fun CatalogScreenPreview() {
-    //CatalogScreen(NavController())
+    CatalogScreen(navController = rememberNavController())
 }

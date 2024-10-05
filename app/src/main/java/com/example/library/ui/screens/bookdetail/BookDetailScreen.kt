@@ -46,18 +46,18 @@ fun BookDetailScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Book Details") },
+                title = { Text("Detalles del Libro") },
                 navigationIcon = {
-                    IconButton(onClick = { /* Acción de navegación, por ejemplo, regresar */ }) {
+                    IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 },
                 actions = {
-                    IconButton(onClick = { /* Acción de acción, como favoritos */ }) {
-                        Icon(Icons.Outlined.Bookmark, contentDescription = "Favorite")
+                    IconButton(onClick = { /* Acción para agregar a favoritos */ }) {
+                        Icon(Icons.Outlined.Bookmark, contentDescription = "Favorito")
                     }
-                    IconButton(onClick = { /*TODO*/ }) {
-                        Icon(Icons.Outlined.MoreVert, contentDescription = "Other options")
+                    IconButton(onClick = { /* Más opciones */ }) {
+                        Icon(Icons.Outlined.MoreVert, contentDescription = "Más opciones")
                     }
                 }
             )
@@ -79,7 +79,7 @@ fun BookDetailScreen(
 
                 items(similarBooks) { similarBook ->
                     TextAndImage(similarBook) { clickedBook ->
-                        // Aquí puedes manejar el clic en el libro similar, por ejemplo, navegar a otra pantalla.
+                        // Manejar el clic en el libro similar
                     }
                     Spacer(modifier = Modifier.height(16.dp))
                 }
@@ -89,7 +89,7 @@ fun BookDetailScreen(
 }
 
 @Composable
-fun SimpleCardGrid(){
+fun SimpleCardGrid() {
     Row(
         horizontalArrangement = Arrangement.spacedBy(0.dp, Alignment.Start),
         verticalAlignment = Alignment.CenterVertically
@@ -98,13 +98,12 @@ fun SimpleCardGrid(){
             text = "Títulos similares",
             style = MaterialTheme.typography.headlineSmall,
         )
-        Column (
+        Column(
             verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterVertically),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            IconButton(onClick = { /*TODO*/ })
-            {
-                Icon(imageVector = Icons.AutoMirrored.Filled.ArrowForward, contentDescription = "Other options")
+            IconButton(onClick = { /*TODO*/ }) {
+                Icon(imageVector = Icons.AutoMirrored.Filled.ArrowForward, contentDescription = "Otras opciones")
             }
         }
     }
@@ -119,7 +118,7 @@ fun HeaderBookDetail(book: Book) {
     ) {
         Image(
             painter = painterResource(id = R.drawable.wireframe_image),
-            contentDescription = "Image description",
+            contentDescription = "Descripción de la imagen",
             contentScale = ContentScale.FillBounds,
             modifier = Modifier
                 .width(136.dp)
@@ -135,15 +134,23 @@ fun HeaderBookDetail(book: Book) {
                 style = MaterialTheme.typography.headlineSmall,
                 fontSize = 24.sp,
                 fontWeight = FontWeight.W400,
+                color = MaterialTheme.colorScheme.onSurface
             )
             Text(
                 text = book.author,
                 style = MaterialTheme.typography.titleMedium,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.W400,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Spacer(modifier = Modifier.height(24.dp))
-            Button(onClick = { /*TODO*/ }) {
+            Button(
+                onClick = { /*TODO*/ },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                )
+            ) {
                 Text("Reservar")
             }
         }
@@ -161,15 +168,15 @@ fun TextContent(book: Book) {
             text = "Fecha de publicación: ${book.publicationDate}",
             style = MaterialTheme.typography.labelSmall,
             fontSize = 11.sp,
+            color = MaterialTheme.colorScheme.onSurface
         )
         Text(
             modifier = Modifier.padding(top = 8.dp),
-            text = book.description
+            text = book.description,
+            color = MaterialTheme.colorScheme.onSurface
         )
     }
 }
-
-// La función SimpleCardGrid no necesita cambios aquí.
 
 @Composable
 fun TextAndImage(book: Book, onBookClick: (Book) -> Unit) {
@@ -182,7 +189,7 @@ fun TextAndImage(book: Book, onBookClick: (Book) -> Unit) {
                 .width(120.dp)
                 .height(120.dp),
             painter = painterResource(id = R.drawable.wireframe_image),
-            contentDescription = "image description",
+            contentDescription = "Descripción de la imagen",
             contentScale = ContentScale.FillBounds
         )
         Column(
@@ -192,10 +199,12 @@ fun TextAndImage(book: Book, onBookClick: (Book) -> Unit) {
             Text(
                 text = book.title,
                 style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onSurface
             )
             Text(
                 text = book.description,
                 style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }
@@ -205,6 +214,6 @@ fun TextAndImage(book: Book, onBookClick: (Book) -> Unit) {
 @Composable
 fun BookDetailScreenPreview() {
     LibraryTheme {
-        //BookDetailScreen()
+        BookDetailScreen(navController = rememberNavController()) // Descomenta para probar
     }
 }

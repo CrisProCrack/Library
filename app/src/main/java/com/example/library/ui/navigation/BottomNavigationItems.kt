@@ -8,7 +8,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 // Definir los elementos de navegación inferior como un data class
 data class BottomNavigationItem(
     val label: String = "",
-    val icon: ImageVector = Icons.Filled.Home,
+    val icon: ImageVector = Icons.Filled.Bookmarks,
     val route: String = ""
 ) {
     // Lista de ítems de navegación
@@ -35,5 +35,4 @@ sealed class Screens(val route: String) {
     object BookDetail : Screens("book_detail")
     object Catalog : Screens("catalog")
     object Search : Screens("search")
-
 }

@@ -55,7 +55,13 @@ fun RegisterScreen(
                 onValueChange = { viewModel.onNameChange(it) },
                 label = { Text("Nombre") },
                 placeholder = { Text("Ingresa un nombre") },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = MaterialTheme.colorScheme.surface,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    focusedLabelColor = MaterialTheme.colorScheme.primary,
+                    unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -66,7 +72,8 @@ fun RegisterScreen(
                 onValueChange = { viewModel.onEmailChange(it) },
                 label = { Text("Correo") },
                 placeholder = { Text("Ingresa un correo") },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                colors = TextFieldDefaults.colors()
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -77,7 +84,8 @@ fun RegisterScreen(
                 onValueChange = { viewModel.onPhoneNumberChange(it) },
                 label = { Text("Número de teléfono") },
                 placeholder = { Text("Ingresa un número telefónico") },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                colors = TextFieldDefaults.colors()
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -88,7 +96,8 @@ fun RegisterScreen(
                 onValueChange = { viewModel.onAddressChange(it) },
                 label = { Text("Dirección") },
                 placeholder = { Text("Ingresa una dirección") },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                colors = TextFieldDefaults.colors()
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -100,7 +109,8 @@ fun RegisterScreen(
                 label = { Text("Contraseña") },
                 placeholder = { Text("Ingresa una contraseña") },
                 visualTransformation = PasswordVisualTransformation(),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                colors = TextFieldDefaults.colors()
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -112,7 +122,8 @@ fun RegisterScreen(
                 label = { Text("Confirma Contraseña") },
                 placeholder = { Text("Confirma tu contraseña") },
                 visualTransformation = PasswordVisualTransformation(),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                colors = TextFieldDefaults.colors()
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -131,9 +142,13 @@ fun RegisterScreen(
                     .fillMaxWidth()
                     .height(48.dp),
                 shape = RoundedCornerShape(24.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                ),
                 enabled = passwordsMatch // Desactiva el botón si las contraseñas no coinciden
             ) {
-                Text("Registrarse", color = Color.White)
+                Text("Registrarse")
             }
 
             Spacer(modifier = Modifier.height(22.dp))
@@ -151,7 +166,7 @@ fun RegisterScreen(
 
             // Texto de iniciar sesión
             TextButton(onClick = { navController.navigate(Screens.Login.route) }) {
-                Text(text = "¿Ya tienes una cuenta? Iniciar sesión", color = Color.Black)
+                Text(text = "¿Ya tienes una cuenta? Iniciar sesión", color = MaterialTheme.colorScheme.primary)
             }
         }
     }

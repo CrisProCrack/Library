@@ -4,8 +4,10 @@ import BottomNavigationItem
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -35,13 +37,20 @@ fun BottomNavigationBar() {
             // Verifica si la pantalla actual es Login o Register
             if (currentDestination?.route !in listOf(Screens.Login.route, Screens.Register.route)) {
                 NavigationBar {
-                    BottomNavigationItem().bottomNavigationItems().forEachIndexed { _, navigationItem ->
+                    BottomNavigationItem().bottomNavigationItems().forEach { navigationItem ->
+                        val isSelected = navigationItem.route == currentDestination?.route
+
                         NavigationBarItem(
-                            selected = navigationItem.route == currentDestination?.route,
-                            label = { Text(navigationItem.label) },
+                            selected = isSelected,
+                            label = {
+                                Text(
+                                    text = navigationItem.label,
+                                    style = MaterialTheme.typography.labelMedium
+                                )
+                            },
                             icon = {
                                 Icon(
-                                    navigationItem.icon,
+                                    imageVector = navigationItem.icon,
                                     contentDescription = navigationItem.label
                                 )
                             },
@@ -53,7 +62,13 @@ fun BottomNavigationBar() {
                                     launchSingleTop = true
                                     restoreState = true
                                 }
-                            }
+                            },
+                            colors = NavigationBarItemDefaults.colors(
+                                selectedIconColor = MaterialTheme.colorScheme.primary,
+                                unselectedIconColor = MaterialTheme.colorScheme.onSurface,
+                                selectedTextColor = MaterialTheme.colorScheme.primary,
+                                unselectedTextColor = MaterialTheme.colorScheme.onSurface
+                            )
                         )
                     }
                 }
@@ -77,11 +92,10 @@ fun BottomNavigationBar() {
             composable(Screens.BookDetail.route) {
                 BookDetailScreen(navController = navController)
             }
-//            composable(Screens.Search.route) {
-//                val bookRepository = BookRepository(/* Tu implementación de BookDao */)
-//                SearchScreen(navController = navController)
-//            }
-            // Otras pantallas como BookDetail
+            composable(Screens.Search.route) {
+                SearchScreen(navController = navController)
+            }
+            // Otras pantallas se pueden agregar aquí
         }
     }
 }

@@ -7,9 +7,9 @@ import androidx.compose.material.icons.filled.Bookmarks
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.ui.graphics.vector.ImageVector
 
-sealed class Screen(val route: String, @StringRes val resourceId: ImageVector) {
+sealed class Screen(val route: String, val icon: ImageVector) {
     object BookDetail : Screen("book_detail", Icons.Filled.Book)
     object Catalog : Screen("catalog", Icons.Filled.Bookmarks)
     object Search : Screen("search", Icons.Filled.Search)
-
+    // object Rental : Screen("rental")
 }

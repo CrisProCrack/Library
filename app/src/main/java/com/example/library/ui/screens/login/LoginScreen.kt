@@ -38,101 +38,114 @@ fun LoginScreen(
     val password by viewModel.password.collectAsState()
     val loginSuccess by viewModel.loginSuccess.collectAsState()
 
-    Scaffold { innerPadding ->
-        Column(
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize()
-                .padding(horizontal = 16.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            // Título
-            Text(
-                text = "Gestión de \n préstamos de \n libros",
-                style = MaterialTheme.typography.headlineLarge,
-                fontSize = 32.sp,
-                fontWeight = FontWeight.W400,
-                textAlign = TextAlign.Center
-            )
-
-            Spacer(modifier = Modifier.height(40.dp))
-
-            // Bienvenida
-            Text(
-                text = "Bienvenido de vuelta",
-                style = MaterialTheme.typography.titleMedium,
-                fontSize = 24.sp,
-                textAlign = TextAlign.Center
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Imagen de usuario
-            Image(
-                painter = painterResource(id = R.drawable.ic_launcher_foreground),
-                contentDescription = "Avatar",
+    LibraryTheme { // Aplica tu tema
+        Scaffold { innerPadding ->
+            Column(
                 modifier = Modifier
-                    .size(120.dp)
-                    .clip(RoundedCornerShape(60.dp)),
-                contentScale = ContentScale.Crop
-            )
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // Campo de correo electrónico
-            OutlinedTextField(
-                value = email,
-                onValueChange = { viewModel.onEmailChange(it) },
-                label = { Text("Correo") },
-                placeholder = { Text("Ingresa un correo electrónico") },
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Campo de contraseña
-            OutlinedTextField(
-                value = password,
-                onValueChange = { viewModel.onPasswordChange(it) },
-                label = { Text("Contraseña") },
-                placeholder = { Text("Ingresa una contraseña") },
-                visualTransformation = PasswordVisualTransformation(),
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // Botón de inicio de sesión
-            Button(
-                onClick = {
-                    viewModel.login()
-                    if (loginSuccess) {
-                        navController.navigate(Screens.Catalog.route)
-                    }
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(48.dp),
-                shape = RoundedCornerShape(24.dp),
+                    .padding(innerPadding)
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text("Iniciar sesión", color = Color.White)
-            }
+                // Título
+                Text(
+                    text = "Gestión de \n préstamos de \n libros",
+                    style = MaterialTheme.typography.headlineLarge,
+                    textAlign = TextAlign.Center
+                )
 
-            Spacer(modifier = Modifier.height(22.dp))
+                Spacer(modifier = Modifier.height(40.dp))
 
-            // Texto de registro
-            TextButton(onClick = { navController.navigate(Screens.Register.route) }) {
-                Text("¿No estás registrado? Regístrate", color = Color.Black)
-            }
+                // Bienvenida
+                Text(
+                    text = "Bienvenido de vuelta",
+                    style = MaterialTheme.typography.titleMedium,
+                    textAlign = TextAlign.Center
+                )
 
-            // Mensaje de éxito en el inicio de sesión
-            if (loginSuccess) {
-                Text("Inicio de sesión exitoso", color = MaterialTheme.colorScheme.primary)
-            } else {
-                Text("Credenciales incorrectas", color = MaterialTheme.colorScheme.error)
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Imagen de usuario
+                Image(
+                    painter = painterResource(id = R.drawable.ic_launcher_foreground),
+                    contentDescription = "Avatar",
+                    modifier = Modifier
+                        .size(120.dp)
+                        .clip(RoundedCornerShape(60.dp)),
+                    contentScale = ContentScale.Crop
+                )
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                // Campo de correo electrónico
+                OutlinedTextField(
+                    value = email,
+                    onValueChange = { viewModel.onEmailChange(it) },
+                    label = { Text("Correo") },
+                    placeholder = { Text("Ingresa un correo electrónico") },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = TextFieldDefaults.colors(
+                        focusedLabelColor = MaterialTheme.colorScheme.primary,
+                        unfocusedLabelColor = MaterialTheme.colorScheme.onSurface,
+                        focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+                        unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurface
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Campo de contraseña
+                OutlinedTextField(
+                    value = password,
+                    onValueChange = { viewModel.onPasswordChange(it) },
+                    label = { Text("Contraseña") },
+                    placeholder = { Text("Ingresa una contraseña") },
+                    visualTransformation = PasswordVisualTransformation(),
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = TextFieldDefaults.colors(
+                        focusedLabelColor = MaterialTheme.colorScheme.primary,
+                        unfocusedLabelColor = MaterialTheme.colorScheme.onSurface,
+                        focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+                        unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurface
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                // Botón de inicio de sesión
+                Button(
+                    onClick = {
+                        viewModel.login()
+                        if (loginSuccess) {
+                            navController.navigate(Screens.Catalog.route)
+                        }
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp),
+                    shape = RoundedCornerShape(24.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary
+                    )
+                ) {
+                    Text("Iniciar sesión", color = Color.White)
+                }
+
+                Spacer(modifier = Modifier.height(22.dp))
+
+                // Texto de registro
+                TextButton(onClick = { navController.navigate(Screens.Register.route) }) {
+                    Text("¿No estás registrado? Regístrate", color = MaterialTheme.colorScheme.onSurface)
+                }
+
+                // Mensaje de éxito en el inicio de sesión
+                if (loginSuccess) {
+                    Text("Inicio de sesión exitoso", color = MaterialTheme.colorScheme.primary)
+                } else {
+                    Text("Credenciales incorrectas", color = MaterialTheme.colorScheme.error)
+                }
             }
         }
     }
 }
-
