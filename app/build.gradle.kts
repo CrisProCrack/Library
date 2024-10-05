@@ -81,9 +81,12 @@ dependencies {
     //Navigation
     implementation(libs.material)
 
+    //Add image
+    implementation(libs.coil.compose)
+
     //SearchBar
     implementation (libs.androidx.foundation)
-    implementation("androidx.compose.runtime:runtime:1.7.3")
+    implementation(libs.runtime)
 
     //KSP
     ksp(libs.androidx.room.compiler)

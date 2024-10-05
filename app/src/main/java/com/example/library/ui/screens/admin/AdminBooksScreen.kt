@@ -1,5 +1,12 @@
 package com.example.library.ui.screens.admin
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import coil.compose.rememberAsyncImagePainter
+import coil.compose.rememberImagePainter
+
+import android.net.Uri
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -14,7 +21,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -30,7 +37,7 @@ data class Book(
     val author: String,
     val description: String,
     val year: String,
-    val imageResId: Int
+    val imageUri: Uri? // Cambiado a Uri para manejar imágenes de la galería
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -43,7 +50,7 @@ fun AdminBooksScreen(navController: NavController) {
     var showDeleteDialog by remember { mutableStateOf(false) }
     var bookToDelete by remember { mutableStateOf<Book?>(null) }
 
-    // Dialog to Add Book
+    // Diálogo para añadir libro
     if (showAddBookDialog) {
         AddBookDialog(onDismiss = { showAddBookDialog = false }) { newBook ->
             books = books + newBook
@@ -51,7 +58,7 @@ fun AdminBooksScreen(navController: NavController) {
         }
     }
 
-    // Dialog to Edit Book
+    // Diálogo para editar libro
     if (showEditDialog && bookToEdit != null) {
         EditBookDialog(
             book = bookToEdit!!,
@@ -63,7 +70,7 @@ fun AdminBooksScreen(navController: NavController) {
         )
     }
 
-    // Dialog to Confirm Delete Book
+    // Diálogo para confirmar eliminación
     if (showDeleteDialog && bookToDelete != null) {
         DeleteConfirmationDialog(
             book = bookToDelete!!,
@@ -74,7 +81,6 @@ fun AdminBooksScreen(navController: NavController) {
             }
         )
     }
-
 
     Scaffold(
         topBar = {
@@ -90,7 +96,7 @@ fun AdminBooksScreen(navController: NavController) {
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 text = { Text("Añadir Libro") },
-                icon = { Icon(imageVector = Icons.Default.AddCircle, contentDescription = "Anadir") },
+                icon = { Icon(imageVector = Icons.Default.AddCircle, contentDescription = "Añadir") },
                 onClick = { showAddBookDialog = true })
         }
     ) { paddingValues ->
@@ -123,7 +129,11 @@ fun BookCard(book: Book, onEditClick: () -> Unit, onDeleteClick: () -> Unit) {
     ) {
         Row(modifier = Modifier.padding(16.dp)) {
             Image(
-                painter = painterResource(book.imageResId),
+                painter = if (book.imageUri != null) {
+                    rememberAsyncImagePainter(book.imageUri) // Utiliza Coil o similar
+                } else {
+                    painterResource(R.drawable.wireframe_image)
+                },
                 contentDescription = book.name,
                 modifier = Modifier.size(64.dp)
             )
@@ -163,6 +173,12 @@ fun AddBookDialog(onDismiss: () -> Unit, onAdd: (Book) -> Unit) {
     var author by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
     var year by remember { mutableStateOf("") }
+    var imageUri by remember { mutableStateOf<Uri?>(null) }
+
+    // Activity Result Launcher para seleccionar imagen
+    val imagePickerLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        imageUri = uri
+    }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -170,18 +186,19 @@ fun AddBookDialog(onDismiss: () -> Unit, onAdd: (Book) -> Unit) {
         text = {
             Column {
                 TextField(value = name, onValueChange = { name = it }, label = { Text("Nombre") })
-                TextField(
-                    value = author,
-                    onValueChange = { author = it },
-                    label = { Text("Autor") })
-                TextField(
-                    value = description,
-                    onValueChange = { description = it },
-                    label = { Text("Descripción") })
-                TextField(
-                    value = year,
-                    onValueChange = { year = it },
-                    label = { Text("Año de Publicación") })
+                TextField(value = author, onValueChange = { author = it }, label = { Text("Autor") })
+                TextField(value = description, onValueChange = { description = it }, label = { Text("Descripción") })
+                TextField(value = year, onValueChange = { year = it }, label = { Text("Año de Publicación") })
+
+                // Botón para seleccionar imagen
+                Button(onClick = { imagePickerLauncher.launch("image/*") }) {
+                    Text("Seleccionar Imagen")
+                }
+
+                // Mostrar la imagen seleccionada si existe
+                imageUri?.let {
+                    Image(painter = rememberAsyncImagePainter(it), contentDescription = "Imagen Seleccionada", modifier = Modifier.size(64.dp))
+                }
             }
         },
         confirmButton = {
@@ -192,7 +209,7 @@ fun AddBookDialog(onDismiss: () -> Unit, onAdd: (Book) -> Unit) {
                     author = author,
                     description = description,
                     year = year,
-                    imageResId = R.drawable.wireframe_image
+                    imageUri = imageUri
                 )
                 onAdd(newBook)
             }) {
@@ -214,6 +231,12 @@ fun EditBookDialog(book: Book, onDismiss: () -> Unit, onEdit: (Book) -> Unit) {
     var author by remember { mutableStateOf(book.author) }
     var description by remember { mutableStateOf(book.description) }
     var year by remember { mutableStateOf(book.year) }
+    var imageUri by remember { mutableStateOf(book.imageUri) }
+
+    // Activity Result Launcher para seleccionar imagen
+    val imagePickerLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        imageUri = uri
+    }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -221,27 +244,27 @@ fun EditBookDialog(book: Book, onDismiss: () -> Unit, onEdit: (Book) -> Unit) {
         text = {
             Column {
                 TextField(value = name, onValueChange = { name = it }, label = { Text("Nombre") })
-                TextField(
-                    value = author,
-                    onValueChange = { author = it },
-                    label = { Text("Autor") })
-                TextField(
-                    value = description,
-                    onValueChange = { description = it },
-                    label = { Text("Descripción") })
-                TextField(
-                    value = year,
-                    onValueChange = { year = it },
-                    label = { Text("Año de Publicación") })
+                TextField(value = author, onValueChange = { author = it }, label = { Text("Autor") })
+                TextField(value = description, onValueChange = { description = it }, label = { Text("Descripción") })
+                TextField(value = year, onValueChange = { year = it }, label = { Text("Año de Publicación") })
+
+                // Botón para seleccionar imagen
+                Button(onClick = { imagePickerLauncher.launch("image/*") }) {
+                    Text("Seleccionar Imagen")
+                }
+
+                // Mostrar la imagen seleccionada si existe
+                imageUri?.let {
+                    Image(painter = rememberAsyncImagePainter(it), contentDescription = "Imagen Seleccionada", modifier = Modifier.size(64.dp))
+                }
             }
         },
         confirmButton = {
             TextButton(onClick = {
-                val editedBook =
-                    book.copy(name = name, author = author, description = description, year = year)
+                val editedBook = book.copy(name = name, author = author, description = description, year = year, imageUri = imageUri)
                 onEdit(editedBook)
             }) {
-                Text("Editar")
+                Text("Guardar")
             }
         },
         dismissButton = {
@@ -252,13 +275,12 @@ fun EditBookDialog(book: Book, onDismiss: () -> Unit, onEdit: (Book) -> Unit) {
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DeleteConfirmationDialog(book: Book, onDismiss: () -> Unit, onDelete: () -> Unit) {
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text("Eliminar Libro") },
-        text = { Text("¿Está seguro de que desea eliminar '${book.name}'?") },
+        text = { Text("¿Estás seguro de que quieres eliminar el libro '${book.name}'?") },
         confirmButton = {
             TextButton(onClick = onDelete) {
                 Text("Eliminar")
@@ -274,29 +296,8 @@ fun DeleteConfirmationDialog(book: Book, onDismiss: () -> Unit, onDelete: () -> 
 
 @Preview(showBackground = true)
 @Composable
-fun AdminBooksScreenPreview() {
-    val sampleBooks = listOf(
-        Book(
-            id = 1,
-            name = "El Quijote",
-            author = "Miguel de Cervantes",
-            description = "Una novela clásica de la literatura española.",
-            year = "1605",
-            imageResId = R.drawable.wireframe_image
-        ),
-        Book(
-            id = 2,
-            name = "Cien años de soledad",
-            author = "Gabriel García Márquez",
-            description = "Una obra maestra del realismo mágico.",
-            year = "1967",
-            imageResId = R.drawable.wireframe_image
-        )
-    )
-
-    MaterialTheme {
-        Column {
-            AdminBooksScreen(rememberNavController()) // You'll need to provide a NavController context for the preview
-        }
+fun PreviewAdminBooksScreen() {
+    LibraryTheme {
+        AdminBooksScreen(navController = rememberNavController())
     }
 }

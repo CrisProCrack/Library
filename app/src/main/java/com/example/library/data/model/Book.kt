@@ -9,5 +9,6 @@ data class Book(
     val title: String,
     val author: String,
     val description: String,
-    val publicationDate: String
+    val publicationDate: String,
+    val imageResId: Int
 )
