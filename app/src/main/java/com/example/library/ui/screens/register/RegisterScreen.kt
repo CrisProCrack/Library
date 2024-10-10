@@ -2,6 +2,9 @@ package com.example.library.ui.screens.register
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -9,9 +12,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.ViewModelFactoryDsl
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.library.data.LibraryDatabase
@@ -33,6 +36,10 @@ fun RegisterScreen(
     val confirmPassword by viewModel.confirmPassword.collectAsState()
     val registrationSuccess by viewModel.registrationSuccess.collectAsState()
     val passwordsMatch = password == confirmPassword
+
+    var showMessage by remember { mutableStateOf(false) } // Estado para controlar la visibilidad del mensaje
+    var passwordVisible by remember { mutableStateOf(false) } // Estado para ver/ocultar contraseña
+    var confirmPasswordVisible by remember { mutableStateOf(false) } // Estado para ver/ocultar confirmación de contraseña
 
     Scaffold(
         topBar = {
@@ -108,8 +115,16 @@ fun RegisterScreen(
                 onValueChange = { viewModel.onPasswordChange(it) },
                 label = { Text("Contraseña") },
                 placeholder = { Text("Ingresa una contraseña") },
-                visualTransformation = PasswordVisualTransformation(),
+                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                 modifier = Modifier.fillMaxWidth(),
+                trailingIcon = {
+                    IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                        Icon(
+                            imageVector = if (passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
+                            contentDescription = null
+                        )
+                    }
+                },
                 colors = TextFieldDefaults.colors()
             )
 
@@ -121,8 +136,16 @@ fun RegisterScreen(
                 onValueChange = { viewModel.onConfirmPasswordChange(it) },
                 label = { Text("Confirma Contraseña") },
                 placeholder = { Text("Confirma tu contraseña") },
-                visualTransformation = PasswordVisualTransformation(),
+                visualTransformation = if (confirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                 modifier = Modifier.fillMaxWidth(),
+                trailingIcon = {
+                    IconButton(onClick = { confirmPasswordVisible = !confirmPasswordVisible }) {
+                        Icon(
+                            imageVector = if (confirmPasswordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
+                            contentDescription = null
+                        )
+                    }
+                },
                 colors = TextFieldDefaults.colors()
             )
 
@@ -133,9 +156,12 @@ fun RegisterScreen(
                 onClick = {
                     if (passwordsMatch) {
                         viewModel.register()
+                        showMessage = true // Muestra el mensaje después de intentar registrar
                         if (registrationSuccess) {
                             navController.navigate(Screens.Catalog.route)
                         }
+                    } else {
+                        showMessage = true // Muestra el mensaje si las contraseñas no coinciden
                     }
                 },
                 modifier = Modifier
@@ -154,13 +180,11 @@ fun RegisterScreen(
             Spacer(modifier = Modifier.height(22.dp))
 
             // Mensaje de éxito o error
-            if (registrationSuccess) {
-                Text("Registro exitoso", color = MaterialTheme.colorScheme.primary)
-            } else {
-                if (!passwordsMatch) {
-                    Text("Las contraseñas no coinciden", color = MaterialTheme.colorScheme.error)
-                } else {
-                    Text("Por favor, completa todos los campos", color = MaterialTheme.colorScheme.error)
+            if (showMessage) {
+                when {
+                    registrationSuccess -> Text("Registro exitoso", color = MaterialTheme.colorScheme.primary)
+                    !passwordsMatch -> Text("Las contraseñas no coinciden", color = MaterialTheme.colorScheme.error)
+                    else -> Text("Por favor, completa todos los campos", color = MaterialTheme.colorScheme.error)
                 }
             }
 
@@ -171,23 +195,3 @@ fun RegisterScreen(
         }
     }
 }
-
-//class PreviewRegisterViewModel : RegisterViewModel() {
-//    init {
-//        _name.value = "John Doe"
-//        _email.value = "das"
-//        _phoneNumber.value = "1234567890"
-//        _address.value = "Calle 123"
-//        _registrationSuccess.value = false
-//    }
-//}
-//
-//
-//@Composable
-//@Preview
-//fun RegisterScreenPreview() {
-//    val previewViewModel = PreviewRegisterViewModel()
-//    LibraryTheme {
-//        //RegisterScreen(viewModel = previewViewModel)
-//    }
-//}

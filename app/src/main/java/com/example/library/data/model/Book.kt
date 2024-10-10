@@ -1,5 +1,7 @@
+//Book.kt
 package com.example.library.data.model
 
+import android.net.Uri
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -10,5 +12,5 @@ data class Book(
     val author: String,
     val description: String,
     val publicationDate: String,
-    val imageResId: Int
+    val imageResId: String // ID de recurso de imagen
 )

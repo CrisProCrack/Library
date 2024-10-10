@@ -1,3 +1,4 @@
+//BottomNavigationItems.kt
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Book
 import androidx.compose.material.icons.filled.Bookmarks
@@ -11,7 +12,6 @@ data class BottomNavigationItem(
     val icon: ImageVector = Icons.Filled.Bookmarks,
     val route: String = ""
 ) {
-    // Lista de ítems de navegación
     fun bottomNavigationItems(): List<BottomNavigationItem> {
         return listOf(
             BottomNavigationItem(

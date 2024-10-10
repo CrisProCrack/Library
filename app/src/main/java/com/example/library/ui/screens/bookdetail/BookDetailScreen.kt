@@ -1,3 +1,4 @@
+//BookDetailScreen.kt
 package com.example.library.ui.screens.bookdetail
 
 import androidx.compose.foundation.Image

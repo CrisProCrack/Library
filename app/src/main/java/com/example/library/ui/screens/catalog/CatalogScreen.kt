@@ -1,3 +1,4 @@
+//CatalogScreen.kt
 package com.example.library.ui.screens.catalog
 
 import androidx.compose.foundation.Image

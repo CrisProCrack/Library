@@ -83,6 +83,8 @@ dependencies {
 
     //Add image
     implementation(libs.coil.compose)
+    implementation(libs.coil.compose)
+
 
     //SearchBar
     implementation (libs.androidx.foundation)

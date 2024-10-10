@@ -3,6 +3,9 @@ package com.example.library.ui.screens.login
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -14,6 +17,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -22,23 +26,25 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.library.R
 import com.example.library.data.LibraryDatabase
-import com.example.library.ui.screens.login.LoginViewModel
 import com.example.library.ui.theme.LibraryTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(
     navController: NavController,
+    onLoginSuccess: (String, Boolean) -> Unit, // Callback para el éxito del login
     database: LibraryDatabase = LibraryDatabase.getDatabase(context = LocalContext.current)
 ) {
     val viewModel: LoginViewModel = viewModel(factory = LoginViewModelFactory(database))
 
-    // Observamos los estados desde el ViewModel
     val email by viewModel.email.collectAsState()
     val password by viewModel.password.collectAsState()
     val loginSuccess by viewModel.loginSuccess.collectAsState()
 
-    LibraryTheme { // Aplica tu tema
+    var passwordVisible by remember { mutableStateOf(false) }
+    var showMessage by remember { mutableStateOf(false) }
+
+    LibraryTheme {
         Scaffold { innerPadding ->
             Column(
                 modifier = Modifier
@@ -101,8 +107,16 @@ fun LoginScreen(
                     onValueChange = { viewModel.onPasswordChange(it) },
                     label = { Text("Contraseña") },
                     placeholder = { Text("Ingresa una contraseña") },
-                    visualTransformation = PasswordVisualTransformation(),
+                    visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                     modifier = Modifier.fillMaxWidth(),
+                    trailingIcon = {
+                        IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                            Icon(
+                                imageVector = if (passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
+                                contentDescription = null
+                            )
+                        }
+                    },
                     colors = TextFieldDefaults.colors(
                         focusedLabelColor = MaterialTheme.colorScheme.primary,
                         unfocusedLabelColor = MaterialTheme.colorScheme.onSurface,
@@ -117,8 +131,11 @@ fun LoginScreen(
                 Button(
                     onClick = {
                         viewModel.login()
+                        showMessage = true // Muestra el mensaje después del intento de inicio de sesión
                         if (loginSuccess) {
-                            navController.navigate(Screens.Catalog.route)
+                            // Verifica si el usuario es administrador
+                            val isAdminLogin = checkIfAdmin(email) // Implementa esta función según tu lógica
+                            onLoginSuccess(email, isAdminLogin)
                         }
                     },
                     modifier = Modifier
@@ -139,13 +156,22 @@ fun LoginScreen(
                     Text("¿No estás registrado? Regístrate", color = MaterialTheme.colorScheme.onSurface)
                 }
 
-                // Mensaje de éxito en el inicio de sesión
-                if (loginSuccess) {
-                    Text("Inicio de sesión exitoso", color = MaterialTheme.colorScheme.primary)
-                } else {
-                    Text("Credenciales incorrectas", color = MaterialTheme.colorScheme.error)
+                // Mensaje de éxito o error en el inicio de sesión
+                if (showMessage) {
+                    if (loginSuccess) {
+                        Text("Inicio de sesión exitoso", color = MaterialTheme.colorScheme.primary)
+                    } else {
+                        Text("Credenciales incorrectas", color = MaterialTheme.colorScheme.error)
+                    }
                 }
             }
         }
     }
+}
+
+// Función para verificar si el usuario es administrador
+private fun checkIfAdmin(email: String): Boolean {
+    // Implementa la lógica para verificar si el usuario es administrador
+    // Por ejemplo, podrías buscar en la base de datos
+    return email == "admin@example.com" // Cambia esto según tu lógica
 }
