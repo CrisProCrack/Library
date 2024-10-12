@@ -1,6 +1,7 @@
 //CatalogScreen.kt
 package com.example.library.ui.screens.catalog
 
+import android.app.Activity
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
@@ -24,6 +25,8 @@ import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.SwapVert
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
@@ -36,6 +39,8 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
@@ -69,14 +74,34 @@ fun CatalogScreen(
     val selectedFilter by viewModel.selectedFilter.collectAsState()
     val sortingOption by viewModel.sortingOption.collectAsState()
 
+    val (menuExpanded, setMenuExpanded) = remember { mutableStateOf(false) }
+    val context = LocalContext.current
+
+
+
     LibraryTheme {
         Scaffold(
             topBar = {
                 TopAppBar(
                     title = { Text("Catálogo", style = MaterialTheme.typography.titleLarge) },
                     actions = {
-                        IconButton(onClick = { /* Acción de menú */ }) {
+                        IconButton(onClick = { setMenuExpanded(true) }) {
                             Icon(Icons.Filled.MoreVert, contentDescription = "Menú")
+                        }
+                        // Menú desplegable
+                        DropdownMenu(
+                            expanded = menuExpanded,
+                            onDismissRequest = { setMenuExpanded(false) }
+                        ) {
+                            DropdownMenuItem(
+                                text = { Text("Salir") },
+                                onClick = {
+                                    // Cerrar la aplicación
+                                    // Aquí puedes agregar lógica para salir de la aplicación
+                                    setMenuExpanded(false)
+                                    (context as Activity).finish()
+                                }
+                            )
                         }
                     }
                 )
@@ -125,6 +150,8 @@ fun CatalogScreen(
         }
     }
 }
+
+
 
 @Composable
 fun FilterChipCarousel(
