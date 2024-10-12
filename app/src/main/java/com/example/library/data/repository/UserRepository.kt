@@ -29,5 +29,15 @@ class UserRepository(private val database: LibraryDatabase) {
         }
     }
 
-    // Otros métodos para acceder a datos de usuarios
+    suspend fun getAllUsers(): List<User> {
+        return withContext(Dispatchers.IO) {
+            database.userDao().getAllUsers()
+        }
+    }
+
+    suspend fun deleteUser(user: User) {
+        withContext(Dispatchers.IO) {
+            database.userDao().deleteUserById(user.id)
+        }
+    }
 }

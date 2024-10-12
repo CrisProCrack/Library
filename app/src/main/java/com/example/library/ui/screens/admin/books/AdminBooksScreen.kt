@@ -1,5 +1,5 @@
 //AdminBooksScreen.kt
-package com.example.library.ui.screens.admin
+package com.example.library.ui.screens.admin.books
 
 import android.content.Context
 import androidx.activity.compose.rememberLauncherForActivityResult

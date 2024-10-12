@@ -5,9 +5,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.LibraryBooks
 import androidx.compose.material.icons.filled.Book
-import androidx.compose.material.icons.filled.LibraryBooks
 import androidx.compose.material.icons.filled.People
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -24,9 +22,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.library.ui.screens.admin.AdminBooksScreen
-import com.example.library.ui.screens.admin.AdminRentedBooksScreen
-import com.example.library.ui.screens.admin.AdminUsersScreen
+import com.example.library.data.repository.UserRepository
+import com.example.library.ui.screens.admin.books.AdminBooksScreen
+import com.example.library.ui.screens.admin.rentedbooks.AdminRentedBooksScreen
+import com.example.library.ui.screens.admin.users.AdminUsersScreen
 
 @Composable
 fun AdminBottomNavigationBar() {
@@ -74,20 +73,20 @@ fun AdminBottomNavigationBar() {
                 }
 
                 // Botón para regresar al panel de usuario
-                NavigationBarItem(
-                    selected = false,
-                    label = { Text("Usuario") },
-                    icon = { Icon(Icons.Filled.Person, contentDescription = "Usuario") },
-                    onClick = {
-                        navController.navigate("user_panel") {
-                            popUpTo(navController.graph.findStartDestination().id) {
-                                saveState = true
-                            }
-                            launchSingleTop = true
-                            restoreState = true
-                        }
-                    }
-                )
+//                NavigationBarItem(
+//                    selected = false,
+//                    label = { Text("Usuario") },
+//                    icon = { Icon(Icons.Filled.Person, contentDescription = "Usuario") },
+//                    onClick = {
+//                        navController.navigate("user_panel") {
+//                            popUpTo(navController.graph.findStartDestination().id) {
+//                                saveState = true
+//                            }
+//                            launchSingleTop = true
+//                            restoreState = true
+//                        }
+//                    }
+//                )
             }
         }
     ) { paddingValues ->

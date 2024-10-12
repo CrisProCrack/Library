@@ -5,7 +5,7 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.library.data.LibraryDatabase
-import com.example.library.ui.screens.admin.AdminBooksViewModel
+import com.example.library.ui.screens.admin.books.AdminBooksViewModel
 import com.example.library.ui.screens.bookdetail.BookDetailViewModel
 import com.example.library.ui.screens.catalog.CatalogViewModel
 import com.example.library.ui.screens.search.SearchViewModel
