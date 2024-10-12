@@ -46,8 +46,8 @@ fun BottomNavigationBar(onLoginSuccess: (String, Boolean) -> Unit, isAdmin: Bool
                 NavigationBar {
                     // Definir los elementos de navegación
                     val navigationItems = listOf(
-                        NavigationItem("Catalog", "catalog", Icons.Filled.Bookmarks),
-                        NavigationItem("Search", "search", Icons.Filled.Search)
+                        NavigationItem("Catalogo", "catalog", Icons.Filled.Bookmarks),
+                        NavigationItem("Buscar", "search", Icons.Filled.Search)
                     )
 
                     navigationItems.forEach { navigationItem ->
