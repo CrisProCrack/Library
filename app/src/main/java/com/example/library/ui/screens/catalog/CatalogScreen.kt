@@ -1,49 +1,75 @@
 //CatalogScreen.kt
 package com.example.library.ui.screens.catalog
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.SwapVert
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import coil.compose.rememberAsyncImagePainter
 import com.example.library.R
-import com.example.library.ui.screens.catalog.CatalogViewModel
+import com.example.library.data.LibraryDatabase
+import com.example.library.data.model.Book
+import com.example.library.ui.screens.register.ViewModelFactory
 import com.example.library.ui.theme.LibraryTheme
+import java.io.File
 
+
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CatalogScreen(
     navController: NavController,
-    viewModel: CatalogViewModel = viewModel()
+    database: LibraryDatabase = LibraryDatabase.getDatabase(context = LocalContext.current),
+    viewModel: CatalogViewModel = viewModel(factory = ViewModelFactory(database))
 ) {
     // Observar estados desde el ViewModel
-    val books by viewModel.books.collectAsState()
+    val books by viewModel.filteredBooks.collectAsState() // Usar lista filtrada
     val selectedFilter by viewModel.selectedFilter.collectAsState()
     val sortingOption by viewModel.sortingOption.collectAsState()
 
-    // Cargar los libros cuando la pantalla se muestra
-    LaunchedEffect(Unit) {
-        viewModel.loadBooks()
-    }
-
-    LibraryTheme { // Aplica tu tema
+    LibraryTheme {
         Scaffold(
             topBar = {
                 TopAppBar(
@@ -65,7 +91,7 @@ fun CatalogScreen(
                 // Filtro con Chips (Carrusel)
                 FilterChipCarousel(
                     selectedFilter = selectedFilter,
-                    onFilterSelected = { viewModel.onFilterSelected(it) }
+                    onFilterSelected = { genre -> viewModel.onFilterSelected(genre) }
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -87,7 +113,12 @@ fun CatalogScreen(
                     modifier = Modifier.fillMaxHeight()
                 ) {
                     items(books.size) { index ->
-                        Cards(bookTitle = books[index])
+                        BookCard(
+                            book = books[index],
+                            onClick = {
+                                navController.navigate("book_detail/${books[index].id}")
+                            }
+                        )
                     }
                 }
             }
@@ -140,33 +171,41 @@ fun SortingControls(
 }
 
 @Composable
-fun Cards(bookTitle: String, catalogViewModel: CatalogViewModel = viewModel()) {
-    // Obtenemos la fecha actual del ViewModel
-    val currentDate by catalogViewModel.currentDate
+fun BookCard(book: Book, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .width(120.dp)
-            .height(168.dp),
+            .height(168.dp)
+            .clickable { onClick() }, // Hacer clic en el libro
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
+            val painter: Painter = if (book.imageResId.isNotEmpty()) {
+                rememberAsyncImagePainter(File(book.imageResId))
+            } else {
+                painterResource(id = R.drawable.wireframe_image)
+            }
+
             Image(
-                painter = painterResource(id = R.drawable.wireframe_image),
-                contentDescription = "null",
+                painter = painter,
+                contentDescription = book.title,
                 modifier = Modifier
                     .width(100.dp)
                     .height(100.dp),
                 contentScale = ContentScale.Inside
             )
 
-            Text(text = bookTitle, style = MaterialTheme.typography.titleSmall)
-            Text(text = "Actualizado el $currentDate", style = MaterialTheme.typography.bodySmall)
+            Text(text = book.title, style = MaterialTheme.typography.titleSmall)
+            Text(text = "Autor: ${book.author}", style = MaterialTheme.typography.bodySmall)
+            Text(text = "Actualizado el ${book.publicationDate}", style = MaterialTheme.typography.bodySmall)
         }
     }
 }
 
+
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview
 @Composable
 fun CatalogScreenPreview() {

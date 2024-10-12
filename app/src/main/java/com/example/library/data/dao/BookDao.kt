@@ -19,11 +19,14 @@ interface BookDao {
     suspend fun getBookById(bookId: String): Book?
 
     @Query("SELECT * FROM books")
-    fun getAllBooks(): Flow<List<Book>> // Usamos Flow para actualizaciones automáticas
+    fun getAllBooks(): Flow<List<Book>>
 
     @Update
-    suspend fun updateBook(book: Book) // Nuevo método para actualizar libros
+    suspend fun updateBook(book: Book)
 
     @Query("DELETE FROM books WHERE id = :bookId")
-    suspend fun deleteBook(bookId: String) // Nuevo método para eliminar libros
+    suspend fun deleteBook(bookId: String)
+
+    @Query("SELECT * FROM books WHERE genre = :genre AND id != :bookId LIMIT 5")
+    suspend fun getSimilarBooks(bookId: String, genre: String?): List<Book>
 }

@@ -1,5 +1,7 @@
 package com.example.library.ui.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -18,16 +20,19 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.library.ui.screens.bookdetail.BookDetailScreen
 import com.example.library.ui.screens.catalog.CatalogScreen
 import com.example.library.ui.screens.login.LoginScreen
 import com.example.library.ui.screens.register.RegisterScreen
 import com.example.library.ui.screens.search.SearchScreen
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun BottomNavigationBar(onLoginSuccess: (String, Boolean) -> Unit, isAdmin: Boolean) {
     val navController = rememberNavController()
@@ -108,8 +113,14 @@ fun BottomNavigationBar(onLoginSuccess: (String, Boolean) -> Unit, isAdmin: Bool
             composable(Screens.Catalog.route) {
                 CatalogScreen(navController = navController)
             }
-            composable(Screens.BookDetail.route) {
-                BookDetailScreen(navController = navController)
+            composable(
+                route = "book_detail/{bookId}", // Define el argumento en la ruta
+                arguments = listOf(navArgument("bookId") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val bookId = backStackEntry.arguments?.getString("bookId") // Obtiene el bookId pasado como argumento
+                if (bookId != null) {
+                    BookDetailScreen(navController = navController, bookId = bookId)
+                }
             }
             composable(Screens.Search.route) {
                 SearchScreen(navController = navController)
