@@ -1,5 +1,6 @@
 package com.example.library.ui.screens.login
 
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -15,34 +16,33 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.library.R
 import com.example.library.data.LibraryDatabase
 import com.example.library.ui.theme.LibraryTheme
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(
     navController: NavController,
-    onLoginSuccess: (String, Boolean) -> Unit, // Callback para el éxito del login
+    onLoginSuccess: (String, Boolean) -> Unit,
     database: LibraryDatabase = LibraryDatabase.getDatabase(context = LocalContext.current)
 ) {
     val viewModel: LoginViewModel = viewModel(factory = LoginViewModelFactory(database))
-
     val email by viewModel.email.collectAsState()
     val password by viewModel.password.collectAsState()
     val loginSuccess by viewModel.loginSuccess.collectAsState()
 
     var passwordVisible by remember { mutableStateOf(false) }
     var showMessage by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
 
     LibraryTheme {
         Scaffold { innerPadding ->
@@ -133,6 +133,10 @@ fun LoginScreen(
                         viewModel.login()
                         showMessage = true // Muestra el mensaje después del intento de inicio de sesión
                         if (loginSuccess) {
+                            // Guarda el userId en SharedPreferences
+                            scope.launch {
+                                saveUserIdToPreferences(context, email)
+                            }
                             // Verifica si el usuario es administrador
                             val isAdminLogin = checkIfAdmin(email) // Implementa esta función según tu lógica
                             onLoginSuccess(email, isAdminLogin)
@@ -171,7 +175,11 @@ fun LoginScreen(
 
 // Función para verificar si el usuario es administrador
 private fun checkIfAdmin(email: String): Boolean {
-    // Implementa la lógica para verificar si el usuario es administrador
-    // Por ejemplo, podrías buscar en la base de datos
     return email == "admin@example.com" // Cambia esto según tu lógica
+}
+
+// Función para guardar el userId en SharedPreferences
+suspend fun saveUserIdToPreferences(context: Context, userId: String) {
+    val sharedPreferences = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+    sharedPreferences.edit().putString("user_id", userId).apply()
 }

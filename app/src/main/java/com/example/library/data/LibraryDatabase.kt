@@ -6,6 +6,7 @@ import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.library.data.dao.BookDao
+import com.example.library.data.dao.RentalDao
 import com.example.library.data.dao.UserDao
 import com.example.library.data.model.Book
 import com.example.library.data.model.Rental
@@ -15,7 +16,7 @@ import com.example.library.data.model.User
 abstract class LibraryDatabase : RoomDatabase() {
     abstract fun bookDao(): BookDao
     abstract fun userDao(): UserDao
-    //abstract fun rentalDao(): RentalDao
+    abstract fun rentalDao(): RentalDao
 
     companion object {
         @Volatile
