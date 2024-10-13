@@ -1,4 +1,4 @@
-package com.example.library.ui.screens.bookdetail
+package com.example.library.ui.screens.user.bookdetail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

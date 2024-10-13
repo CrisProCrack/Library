@@ -1,10 +1,12 @@
 package com.example.library.ui.navigation
 
+import Screens
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Book
 import androidx.compose.material.icons.filled.Bookmarks
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
@@ -26,11 +28,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.library.ui.screens.bookdetail.BookDetailScreen
-import com.example.library.ui.screens.catalog.CatalogScreen
+import com.example.library.ui.screens.user.bookdetail.BookDetailScreen
+import com.example.library.ui.screens.user.catalog.CatalogScreen
 import com.example.library.ui.screens.login.LoginScreen
 import com.example.library.ui.screens.register.RegisterScreen
-import com.example.library.ui.screens.search.SearchScreen
+import com.example.library.ui.screens.user.rented.UserRentedBooks
+import com.example.library.ui.screens.user.search.SearchScreen
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -47,7 +50,8 @@ fun BottomNavigationBar(onLoginSuccess: (String, Boolean) -> Unit, isAdmin: Bool
                     // Definir los elementos de navegación
                     val navigationItems = listOf(
                         NavigationItem("Catalogo", "catalog", Icons.Filled.Bookmarks),
-                        NavigationItem("Buscar", "search", Icons.Filled.Search)
+                        NavigationItem("Buscar", "search", Icons.Filled.Search),
+                        NavigationItem("Prestados", "rented_books", Icons.Filled.Book)
                     )
 
                     navigationItems.forEach { navigationItem ->
@@ -124,6 +128,9 @@ fun BottomNavigationBar(onLoginSuccess: (String, Boolean) -> Unit, isAdmin: Bool
             }
             composable(Screens.Search.route) {
                 SearchScreen(navController = navController)
+            }
+            composable(Screens.RentedBooks.route){
+                UserRentedBooks(navController = navController)
             }
             // Composable para el panel de administración
             composable("admin_panel") {

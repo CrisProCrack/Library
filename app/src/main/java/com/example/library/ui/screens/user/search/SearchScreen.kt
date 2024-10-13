@@ -1,4 +1,4 @@
-package com.example.library.ui.screens.search
+package com.example.library.ui.screens.user.search
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement

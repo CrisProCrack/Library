@@ -1,4 +1,4 @@
-package com.example.library.ui.screens.search
+package com.example.library.ui.screens.user.bookdetail
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -6,14 +6,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.library.data.LibraryDatabase
 
-class SearchViewModelFactory(
+class BookDetailViewModelFactory(
     private val database: LibraryDatabase
 ) : ViewModelProvider.Factory {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(SearchViewModel::class.java)) {
+        if (modelClass.isAssignableFrom(BookDetailViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return SearchViewModel(database) as T
+            return BookDetailViewModel(database) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

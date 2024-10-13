@@ -1,4 +1,4 @@
-package com.example.library.ui.screens.catalog
+package com.example.library.ui.screens.user.catalog
 
 
 import android.os.Build

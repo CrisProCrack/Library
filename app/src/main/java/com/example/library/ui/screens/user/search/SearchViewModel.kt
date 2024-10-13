@@ -1,4 +1,4 @@
-package com.example.library.ui.screens.search
+package com.example.library.ui.screens.user.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

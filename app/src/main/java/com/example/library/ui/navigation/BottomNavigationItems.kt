@@ -23,6 +23,11 @@ data class BottomNavigationItem(
                 label = "Buscar",
                 icon = Icons.Filled.Search,
                 route = Screens.Search.route
+            ),
+            BottomNavigationItem(
+                label = "Prestado",
+                icon = Icons.Filled.Book,
+                route = Screens.RentedBooks.route
             )
         )
     }
@@ -35,4 +40,5 @@ sealed class Screens(val route: String) {
     object BookDetail : Screens("book_detail")
     object Catalog : Screens("catalog")
     object Search : Screens("search")
+    object RentedBooks : Screens("rented_books")
 }
