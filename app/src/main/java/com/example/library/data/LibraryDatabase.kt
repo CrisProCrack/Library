@@ -28,7 +28,7 @@ abstract class LibraryDatabase : RoomDatabase() {
                     LibraryDatabase::class.java,
                     "library_database"
                 )
-                    .addMigrations(MIGRATION_1_2) // Agrega la migración
+                    .addMigrations(MIGRATION_1_2)
                     .build()
                 INSTANCE = instance
                 instance

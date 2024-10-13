@@ -21,7 +21,7 @@ import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.library.data.LibraryDatabase
 import com.example.library.data.model.Book
-import com.example.library.ui.screens.register.ViewModelFactory
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -29,7 +29,7 @@ fun BookDetailScreen(
     navController: NavController,
     bookId: String,
     database: LibraryDatabase = LibraryDatabase.getDatabase(context = LocalContext.current),
-    bookDetailViewModel: BookDetailViewModel = viewModel(factory = ViewModelFactory(database))
+    bookDetailViewModel: BookDetailViewModel = viewModel(factory = BookDetailViewModelFactory(database))
 ) {
     LaunchedEffect(bookId) {
         bookDetailViewModel.loadBook(bookId)

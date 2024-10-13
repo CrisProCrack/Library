@@ -43,7 +43,7 @@ fun AdminBooksScreen(navController: NavController,database: LibraryDatabase = Li
     var showEditDialog by remember { mutableStateOf(false) }
     var showDeleteDialog by remember { mutableStateOf(false) }
     var bookToDelete by remember { mutableStateOf<Book?>(null) }
-    val viewModel: AdminBooksViewModel = viewModel(factory = ViewModelFactory(database))
+    val viewModel: AdminBooksViewModel = viewModel(factory = AdminBooksViewModelFactory(database))
     val books by viewModel.books.collectAsState()
 
 

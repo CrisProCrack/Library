@@ -1,21 +1,42 @@
 package com.example.library.ui.screens.admin.users
 
-import androidx.compose.runtime.Composable
-import androidx.navigation.NavController
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import com.example.library.data.LibraryDatabase
 import com.example.library.data.model.User
 
 @Composable
-fun AdminUsersScreen(navController: NavController, adminViewModel: AdminUsersViewModel = viewModel()) {
-    val users by adminViewModel.users.collectAsState()
+fun AdminUsersScreen(navController: NavController,database: LibraryDatabase = LibraryDatabase.getDatabase(context = LocalContext.current)) {
+    val viewModel: AdminUsersViewModel = viewModel(factory = AdminUsersViewModelFactory(database))
+    val users by viewModel.users.collectAsState()
 
     var selectedUser by remember { mutableStateOf<User?>(null) }
     var showConfirmationDialog by remember { mutableStateOf(false) }
@@ -45,7 +66,7 @@ fun AdminUsersScreen(navController: NavController, adminViewModel: AdminUsersVie
         ConfirmDeleteDialog(
             user = selectedUser!!,
             onConfirm = {
-                adminViewModel.deleteUser(selectedUser!!)
+                viewModel.deleteUser(selectedUser!!)
                 showConfirmationDialog = false
                 selectedUser = null
             },
@@ -67,7 +88,7 @@ fun UserCard(user: User, onDeleteClick: () -> Unit) {
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = "User: ${user.name}", fontWeight = FontWeight.Bold)
+            Text(text = "Usuario: ${user.name}", fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(4.dp))
             Text(text = "Email: ${user.email}")
 
@@ -78,7 +99,7 @@ fun UserCard(user: User, onDeleteClick: () -> Unit) {
                 horizontalArrangement = Arrangement.End
             ) {
                 Button(onClick = onDeleteClick, colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)) {
-                    Text(text = "Delete User")
+                    Text(text = "Eliminar Usuario")
                 }
             }
         }
@@ -89,16 +110,16 @@ fun UserCard(user: User, onDeleteClick: () -> Unit) {
 fun ConfirmDeleteDialog(user: User, onConfirm: () -> Unit, onDismiss: () -> Unit) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(text = "Delete User") },
-        text = { Text(text = "Are you sure you want to delete ${user.name}? This action cannot be undone.") },
+        title = { Text(text = "Eliminar Usuario") },
+        text = { Text(text = "Estas seguro de eliminar a ${user.name}? esta acción no se puede deshacer.") },
         confirmButton = {
             Button(onClick = onConfirm) {
-                Text(text = "Yes, Delete")
+                Text(text = "Si, Eliminar")
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text(text = "Cancel")
+                Text(text = "Cancelar")
             }
         }
     )

@@ -56,7 +56,6 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.library.R
 import com.example.library.data.LibraryDatabase
 import com.example.library.data.model.Book
-import com.example.library.ui.screens.register.ViewModelFactory
 import com.example.library.ui.theme.LibraryTheme
 import java.io.File
 
@@ -67,7 +66,7 @@ import java.io.File
 fun CatalogScreen(
     navController: NavController,
     database: LibraryDatabase = LibraryDatabase.getDatabase(context = LocalContext.current),
-    viewModel: CatalogViewModel = viewModel(factory = ViewModelFactory(database))
+    viewModel: CatalogViewModel = viewModel(factory = CatalogViewModelFactory(database))
 ) {
     // Observar estados desde el ViewModel
     val books by viewModel.filteredBooks.collectAsState() // Usar lista filtrada
