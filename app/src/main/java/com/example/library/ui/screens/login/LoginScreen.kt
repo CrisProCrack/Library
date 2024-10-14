@@ -19,9 +19,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.library.R
 import com.example.library.data.LibraryDatabase
 import com.example.library.ui.theme.LibraryTheme
@@ -74,7 +76,7 @@ fun LoginScreen(
 
                 // Imagen de usuario
                 Image(
-                    painter = painterResource(id = R.drawable.ic_launcher_foreground),
+                    painter = painterResource(id = R.drawable._d_avatar_13),
                     contentDescription = "Avatar",
                     modifier = Modifier
                         .size(120.dp)
@@ -182,4 +184,12 @@ private fun checkIfAdmin(email: String): Boolean {
 suspend fun saveUserIdToPreferences(context: Context, userId: String) {
     val sharedPreferences = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
     sharedPreferences.edit().putString("user_id", userId).apply()
+}
+
+@Preview
+@Composable
+fun LoginScreenPreview() {
+    LibraryTheme {
+        LoginScreen(rememberNavController(), onLoginSuccess = { _, _ -> })
+    }
 }
