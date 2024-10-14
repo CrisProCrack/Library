@@ -137,17 +137,17 @@ fun RentedBookAdminCard(rental: Rental, book: Book, onStatusChange: (RentalStatu
                     IconWithLabel(
                         icon = Icons.Default.Check,
                         label = "Entregado",
-                        onClick = { onStatusChange(RentalStatus.RETURNED) }
+                        onClick = { onStatusChange(RentalStatus.REGRESADO) }
                     )
                     IconWithLabel(
                         icon = Icons.Default.Schedule,
                         label = "Por Entregar",
-                        onClick = { onStatusChange(RentalStatus.NOT_RETURNED) }
+                        onClick = { onStatusChange(RentalStatus.NO_REGRESADO) }
                     )
                     IconWithLabel(
                         icon = Icons.Default.Warning,
                         label = "Retrasado",
-                        onClick = { onStatusChange(RentalStatus.LATE) }
+                        onClick = { onStatusChange(RentalStatus.CON_RETRASO) }
                     )
                 }
             }

@@ -149,7 +149,7 @@ fun HeaderBookDetail(book: Book, userId: String?, database: LibraryDatabase) {
                                 userId = it,
                                 bookId = book.id,
                                 rentalDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date()),
-                                status = RentalStatus.NOT_RETURNED
+                                status = RentalStatus.NO_REGRESADO
                             )
                             database.rentalDao().insertRental(rental)
                         }

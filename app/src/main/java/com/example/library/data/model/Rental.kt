@@ -13,7 +13,10 @@ data class Rental(
 )
 
 enum class RentalStatus {
-    RETURNED,
-    LATE,
-    NOT_RETURNED
+//    RETURNED,
+//    LATE,
+//    NOT_RETURNED
+    REGRESADO,
+    CON_RETRASO,
+    NO_REGRESADO
 }
