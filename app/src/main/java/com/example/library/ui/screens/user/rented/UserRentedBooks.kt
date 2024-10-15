@@ -59,6 +59,7 @@ fun UserRentedBooks(
     database: LibraryDatabase = LibraryDatabase.getDatabase(context = LocalContext.current),
     rentedBooksViewModel: UserRentedBooksViewModel = viewModel(factory = UserRentedBooksViewModelFactory(database))
 ) {
+
     val rentedBooks by rentedBooksViewModel.rentedBooks.collectAsState()
     val books by rentedBooksViewModel.books.collectAsState()
     val scope = rememberCoroutineScope()

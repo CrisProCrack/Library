@@ -8,7 +8,6 @@ import com.example.library.data.model.Rental
 import com.example.library.data.model.RentalStatus
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class RentedBooksViewModel(private val database: LibraryDatabase) : ViewModel() {
@@ -25,13 +24,17 @@ class RentedBooksViewModel(private val database: LibraryDatabase) : ViewModel() 
 
     private fun loadRentedBooks() {
         viewModelScope.launch {
-            _rentedBooks.value = database.rentalDao().getAllRentals().first()
+            database.rentalDao().getAllRentals().collect { rentals ->
+                _rentedBooks.value = rentals
+            }
         }
     }
 
     private fun loadBooks() {
         viewModelScope.launch {
-            _books.value = database.bookDao().getAllBooks().first()
+            database.bookDao().getAllBooks().collect { booksList ->
+                _books.value = booksList
+            }
         }
     }
 
@@ -39,10 +42,15 @@ class RentedBooksViewModel(private val database: LibraryDatabase) : ViewModel() 
         viewModelScope.launch {
             val rental = _rentedBooks.value.find { it.id == rentalId }
             rental?.let {
-                it.status = newStatus
-                database.rentalDao().insertRental(it)
-                loadRentedBooks() // Recargar la lista de libros rentados
+                val updatedRental = it.copy(status = newStatus)
+                database.rentalDao().updateRental(updatedRental)
+                // Emitir una nueva lista con el objeto actualizado
+                _rentedBooks.value = _rentedBooks.value.map { r ->
+                    if (r.id == rentalId) updatedRental else r
+                }
             }
         }
     }
 }
+
+

@@ -27,12 +27,15 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -70,6 +73,7 @@ fun BookDetailScreen(
 
     val book by bookDetailViewModel.book.collectAsState()
     val similarBooks by bookDetailViewModel.similarBooks.collectAsState()
+    val snackbarHostState = remember { SnackbarHostState() }
 
     Scaffold(
         topBar = {
@@ -89,7 +93,8 @@ fun BookDetailScreen(
                     }
                 }
             )
-        }
+        },
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
     ) { innerPadding ->
         LazyColumn(
             modifier = Modifier
@@ -98,7 +103,7 @@ fun BookDetailScreen(
                 .padding(16.dp)
         ) {
             book?.let { book ->
-                item { HeaderBookDetail(book, userId, database) }
+                item { HeaderBookDetail(book, userId, database, snackbarHostState = snackbarHostState) }
                 item { Spacer(modifier = Modifier.height(16.dp)) }
                 item { TextContent(book) }
                 item { Spacer(modifier = Modifier.height(16.dp)) }
@@ -109,7 +114,12 @@ fun BookDetailScreen(
 }
 
 @Composable
-fun HeaderBookDetail(book: Book, userId: String?, database: LibraryDatabase) {
+fun HeaderBookDetail(
+    book: Book,
+    userId: String?,
+    database: LibraryDatabase,
+    snackbarHostState: SnackbarHostState
+) {
     val scope = rememberCoroutineScope()
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -144,14 +154,20 @@ fun HeaderBookDetail(book: Book, userId: String?, database: LibraryDatabase) {
                 onClick = {
                     userId?.let {
                         scope.launch {
-                            val rental = Rental(
-                                id = UUID.randomUUID().toString(),
-                                userId = it,
-                                bookId = book.id,
-                                rentalDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date()),
-                                status = RentalStatus.NO_REGRESADO
-                            )
-                            database.rentalDao().insertRental(rental)
+                            try {
+                                val rental = Rental(
+                                    id = UUID.randomUUID().toString(),
+                                    userId = userId,
+                                    bookId = book.id,
+                                    rentalDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date()),
+                                    status = RentalStatus.NO_REGRESADO
+                                )
+                                database.rentalDao().insertRental(rental)
+                                snackbarHostState.showSnackbar("El libro '${book.title}' ha sido reservado.")
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                                snackbarHostState.showSnackbar("Error al reservar el libro. Por favor, intenta nuevamente.")
+                            }
                         }
                     }
                 },

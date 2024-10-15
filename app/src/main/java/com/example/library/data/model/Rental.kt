@@ -9,7 +9,7 @@ data class Rental(
     val userId: String,         // ID del usuario
     val bookId: String,         // ID del libro
     val rentalDate: String,
-    var status: RentalStatus     // Estado de la renta
+    val status: RentalStatus     // Estado de la renta
 )
 
 enum class RentalStatus {

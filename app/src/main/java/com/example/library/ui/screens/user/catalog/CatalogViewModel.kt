@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.library.data.LibraryDatabase
 import com.example.library.data.model.Book
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -34,6 +35,7 @@ class CatalogViewModel(private val database: LibraryDatabase) : ViewModel() {
     private val _sortingOption = MutableStateFlow<String>("Default")
     val sortingOption: StateFlow<String> = _sortingOption
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     val filteredBooks = _selectedFilter.flatMapLatest { filter ->
         _books.map { books ->
             if (filter.isNullOrEmpty()) books else books.filter { it.genre == filter }
@@ -59,7 +61,7 @@ class CatalogViewModel(private val database: LibraryDatabase) : ViewModel() {
         val date = LocalDate.now().format(formatter)
         _currentDate.value = date
     }
-    
+
 
     // Función para actualizar el filtro seleccionado
     fun onFilterSelected(filter: String) {

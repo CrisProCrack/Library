@@ -29,19 +29,21 @@ abstract class LibraryDatabase : RoomDatabase() {
                     LibraryDatabase::class.java,
                     "library_database"
                 )
-                    .addMigrations(MIGRATION_1_2)
+                    .addMigrations(migration_1_2)
                     .build()
                 INSTANCE = instance
                 instance
             }
         }
+        val migration_1_2 = object : Migration(1, 2) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                // Cambia `NOT_RETURNED` a `NO_REGRESADO`
+                db.execSQL("UPDATE rentals SET status = 'NO_REGRESADO' WHERE status = 'NOT_RETURNED'")
+            }
+        }
+
 
     }
 
 }
 
-val MIGRATION_1_2 = object : Migration(1, 2) {
-    override fun migrate(db: SupportSQLiteDatabase) {
-        db.execSQL("ALTER TABLE books ADD COLUMN genre TEXT NOT NULL DEFAULT ''")
-    }
-}

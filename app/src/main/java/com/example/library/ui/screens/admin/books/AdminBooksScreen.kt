@@ -130,7 +130,6 @@ fun BookCard(book: Book, onEditClick: () -> Unit, onDeleteClick: () -> Unit) {
         Row(modifier = Modifier.padding(16.dp)) {
             val painter = rememberAsyncImagePainter(model = File(book.imageResId))
 
-
             Image(
                 painter = painter,
                 contentDescription = book.title,
@@ -213,7 +212,7 @@ fun AddBookDialog(
             TextButton(onClick = {
                 val imagePath = imageUri?.let { saveImageToInternalStorage(context, it) } ?: ""
                 val newBook = Book(
-                    id = 0.toString(),
+                    id = UUID.randomUUID().toString(),
                     title = name,
                     author = author,
                     description = description,
