@@ -12,5 +12,6 @@ data class Book(
     val description: String,
     val genre: String,
     val publicationDate: String,
-    val imageResId: String // ID de recurso de imagen
+    val imageResId: String, // ID de recurso de imagen
+    var isFavorite: Boolean = false
 )

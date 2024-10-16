@@ -48,4 +48,13 @@ interface BookDao {
 
     @Query("SELECT * FROM books WHERE genre = :genre AND id != :bookId LIMIT 5")
     suspend fun getSimilarBooks(bookId: String, genre: String?): List<Book>
+
+    @Query("UPDATE books SET isFavorite = :isFavorite WHERE id = :bookId")
+    suspend fun updateFavoriteStatus(bookId: String, isFavorite: Boolean)
+
+    @Query("SELECT * FROM books WHERE isFavorite = 1")
+    fun getFavoriteBooks(): Flow<List<Book>>
+
+    @Query("SELECT isFavorite FROM books WHERE id = :bookId")
+    suspend fun isFavorite(bookId: String): Boolean
 }

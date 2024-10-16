@@ -18,6 +18,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.outlined.Bookmark
 import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material3.Button
@@ -74,6 +75,8 @@ fun BookDetailScreen(
     val book by bookDetailViewModel.book.collectAsState()
     val similarBooks by bookDetailViewModel.similarBooks.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
+    val isFavorite by bookDetailViewModel.isFavorite.collectAsState()
+
 
     Scaffold(
         topBar = {
@@ -85,11 +88,18 @@ fun BookDetailScreen(
                     }
                 },
                 actions = {
-                    IconButton(onClick = { /* Acción para agregar a favoritos */ }) {
-                        Icon(Icons.Outlined.Bookmark, contentDescription = "Favorito")
-                    }
-                    IconButton(onClick = { /* Más opciones */ }) {
-                        Icon(Icons.Outlined.MoreVert, contentDescription = "Más opciones")
+                    IconButton(onClick = {
+                        bookDetailViewModel.toggleFavorite()
+                        scope.launch {
+                            snackbarHostState.showSnackbar(
+                                if (isFavorite) "Libro eliminado de favoritos" else "Libro añadido a favoritos"
+                            )
+                        }
+                    }) {
+                        Icon(
+                            imageVector =  if (isFavorite) Icons.Filled.Bookmark else Icons.Outlined.Bookmark,
+                            contentDescription = if (isFavorite) "Quitar de favoritos" else "Añadir a favoritos"
+                        )
                     }
                 }
             )
