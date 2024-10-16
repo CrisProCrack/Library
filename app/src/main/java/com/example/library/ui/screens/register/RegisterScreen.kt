@@ -41,6 +41,14 @@ fun RegisterScreen(
     var passwordVisible by remember { mutableStateOf(false) } // Estado para ver/ocultar contraseña
     var confirmPasswordVisible by remember { mutableStateOf(false) } // Estado para ver/ocultar confirmación de contraseña
 
+    LaunchedEffect(registrationSuccess) {
+        if (registrationSuccess) {
+            navController.navigate(Screens.Login.route) {
+                popUpTo(Screens.Register.route) { inclusive = true }
+            }
+        }
+    }
+
     Scaffold(
         topBar = {
             MediumTopAppBar(
@@ -157,9 +165,6 @@ fun RegisterScreen(
                     if (passwordsMatch) {
                         viewModel.register()
                         showMessage = true // Muestra el mensaje después de intentar registrar
-                        if (registrationSuccess) {
-                            navController.navigate(Screens.Catalog.route)
-                        }
                     } else {
                         showMessage = true // Muestra el mensaje si las contraseñas no coinciden
                     }

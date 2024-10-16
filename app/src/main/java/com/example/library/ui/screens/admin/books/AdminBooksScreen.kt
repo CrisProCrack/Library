@@ -86,11 +86,6 @@ fun AdminBooksScreen(navController: NavController,database: LibraryDatabase = Li
         topBar = {
             TopAppBar(
                 title = { Text("Gestión de libros", style = MaterialTheme.typography.titleLarge) },
-                actions = {
-                    IconButton(onClick = { /* Menu action */ }) {
-                        Icon(Icons.Default.MoreVert, contentDescription = "Menu")
-                    }
-                }
             )
         },
         floatingActionButton = {

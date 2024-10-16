@@ -83,7 +83,7 @@ fun UserRentedBooks(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("Libros Rentados") }
+                title = { Text("Libros Prestados") }
             )
         }
     ) { paddingValues ->
@@ -117,7 +117,7 @@ fun UserRentedBooks(
 
             // Rented Books List
             if (filteredBooks.isEmpty()) {
-                Text("No hay libros rentados en la fecha seleccionada.")
+                Text("No hay libros prestados en la fecha seleccionada.")
             } else {
                 LazyColumn {
                     items(filteredBooks) { rental ->
@@ -163,12 +163,12 @@ fun DatePickerModalInput(
                 }
                 onDismiss()
             }) {
-                Text("OK")
+                Text("Aceptar")
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancel")
+                Text("Cancelar")
             }
         }
     ) {
