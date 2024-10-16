@@ -16,8 +16,10 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -33,6 +35,7 @@ import androidx.navigation.NavController
 import com.example.library.data.LibraryDatabase
 import com.example.library.data.model.User
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AdminUsersScreen(navController: NavController,database: LibraryDatabase = LibraryDatabase.getDatabase(context = LocalContext.current)) {
     val viewModel: AdminUsersViewModel = viewModel(factory = AdminUsersViewModelFactory(database))
@@ -41,23 +44,25 @@ fun AdminUsersScreen(navController: NavController,database: LibraryDatabase = Li
     var selectedUser by remember { mutableStateOf<User?>(null) }
     var showConfirmationDialog by remember { mutableStateOf(false) }
 
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-        Text(
-            text = "Rented Books by Users",
-            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
-        )
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        LazyColumn {
-            items(users.size) { index ->
-                UserCard(
-                    user = users[index],
-                    onDeleteClick = {
-                        selectedUser = users[index]
-                        showConfirmationDialog = true
-                    }
-                )
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(text = "Usuarios Activos") },
+            )
+        }
+    ) { innerPadding ->
+        Column(modifier = Modifier.fillMaxSize().padding(innerPadding).padding(16.dp)) {
+            LazyColumn {
+                items(users.size) { index ->
+                    UserCard(
+                        user = users[index],
+                        onDeleteClick = {
+                            selectedUser = users[index]
+                            showConfirmationDialog = true
+                        }
+                    )
+                }
             }
         }
     }

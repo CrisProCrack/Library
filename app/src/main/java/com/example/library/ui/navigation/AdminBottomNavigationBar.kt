@@ -121,7 +121,7 @@ fun adminBottomNavigationItems(): List<AdminNavigationItem> {
             route = AdminScreens.Books.route
         ),
         AdminNavigationItem(
-            label = "Libros Rentados",
+            label = "Libros prestados",
             icon = Icons.AutoMirrored.Filled.LibraryBooks,
             route = AdminScreens.RentedBooks.route
         )

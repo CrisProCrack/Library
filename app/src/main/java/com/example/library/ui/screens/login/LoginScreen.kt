@@ -76,7 +76,7 @@ fun LoginScreen(
 
                 // Imagen de usuario
                 Image(
-                    painter = painterResource(id = R.drawable._d_avatar_13),
+                    painter = painterResource(id = R.drawable.library_icon_png_5),
                     contentDescription = "Avatar",
                     modifier = Modifier
                         .size(120.dp)

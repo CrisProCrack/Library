@@ -64,7 +64,7 @@ fun AdminRentedBooksScreen(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("Gestión de Libros Rentados") }
+                title = { Text("Gestión de Libros Prestados") }
             )
         }
     ) { paddingValues ->
